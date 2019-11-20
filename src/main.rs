@@ -1,4 +1,4 @@
-use crate::options::Options;
+use crate::options::options::Options;
 
 mod generator;
 mod options;
