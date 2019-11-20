@@ -1,6 +1,6 @@
 use crate::options::password_length::PasswordLength;
 use rand::Rng;
-use crate::algorythm::generator::generate_random_lowercase_letter;
+use crate::algorithm::generator::generate_random_lowercase_letter;
 
 const LENGTH_BOUNDS: usize = 2;
 
