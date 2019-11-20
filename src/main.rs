@@ -1,6 +1,8 @@
+use crate::options::Options;
+
 mod generator;
 mod options;
 
 fn main() {
-    println!("Hello, world!");
+    Options::from_args();
 }
