@@ -1,3 +1,3 @@
 mod generator;
 pub mod simple;
-pub mod chunked;
+pub mod tokenized;

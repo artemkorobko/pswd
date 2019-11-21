@@ -13,7 +13,7 @@ pub struct Options {
     pub length: PasswordLength,
     #[structopt(short, long, default_value = "1", help = "Number of passwords to generate")]
     pub num: u8,
-    #[structopt(short, long, default_value = "0", help = "Number of password tokens")]
+    #[structopt(short, long, default_value = "3", help = "Number of password tokens")]
     pub tokens: u8
 }
 
