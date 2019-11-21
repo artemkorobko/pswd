@@ -11,6 +11,8 @@ pub struct Options {
     #[structopt(short, long, possible_values = &PasswordLength::variants(),
     case_insensitive = true, default_value = "r", help = "Password length")]
     pub length: PasswordLength,
+    #[structopt(short, long, default_value = "1", help = "Number of passwords to generate")]
+    pub num: u8
 }
 
 impl Options {

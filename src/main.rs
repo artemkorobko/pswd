@@ -5,6 +5,9 @@ mod options;
 
 fn main() {
     let options = Options::from_args();
-    let password = algorithm::simple::generate_password(options.length, &options.chars);
-    println!("{}", password);
+
+    for _ in 0..options.num {
+        let password = algorithm::simple::generate_password(&options.length, &options.chars);
+        println!("{}", password);
+    }
 }
