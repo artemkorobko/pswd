@@ -8,7 +8,7 @@ pub trait Generator: Debug {
             self.generate_string(initial_value.capacity(), random)
         } else {
             let expected_length = initial_value.capacity() / (sequence_number + 1);
-            let result = self.generate_string(initial_value.capacity(), random);
+            let result = self.generate_string(expected_length, random);
             combine_strings(initial_value, result, random)
         }
     }
