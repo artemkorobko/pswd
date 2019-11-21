@@ -8,9 +8,9 @@ fn main() {
 
     for _ in 0..options.num {
         let password = if options.tokens == 0 {
-            algorithm::simple::generate_password(&options.length, &options.chars)
+            algorithm::simple::generate_simple(&options.length, &options.chars)
         } else {
-            algorithm::tokenized::generate(options.tokens, &options.length, &options.chars)
+            algorithm::tokenized::generate_tokenized(options.tokens, &options.length, &options.chars)
         };
 
         println!("{}", password);
