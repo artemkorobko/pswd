@@ -6,9 +6,11 @@ use crate::options::password_length::PasswordLength;
 #[derive(StructOpt, Debug)]
 #[structopt(about = "A password generation tool", author = "Artem Korobko")]
 pub struct Options {
-    #[structopt(short, long, possible_values = &CharacterType::variants(),
-    case_insensitive = true, default_value = "l,u,n", use_delimiter = true, help = "Character types")]
-    pub chars: Vec<CharacterType>,
+//    #[structopt(short, long, possible_values = &CharacterType::variants(),
+//    case_insensitive = true, default_value = "l,u,n", use_delimiter = true, help = "Character types")]
+//    pub chars: Vec<CharacterType>,
+    #[structopt(short, long)]
+    pub chars: CharacterType,
     #[structopt(short, long, possible_values = &PasswordLength::variants(),
     case_insensitive = true, default_value = "r", help = "Password length")]
     pub length: PasswordLength,
