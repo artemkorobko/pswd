@@ -10,8 +10,8 @@ pub struct Algorithm {
 }
 
 impl Algorithm {
-    pub fn new() -> Self {
-        Self { generators: Vec::new() }
+    pub fn new(total_generators: usize) -> Self {
+        Self { generators: Vec::with_capacity(total_generators) }
     }
 
     pub fn add_generator(&mut self, generator: GeneratorPtr) -> &mut Self {
@@ -46,7 +46,7 @@ mod tests {
 
     #[test]
     fn should_generate_empty_string_when_no_generators_exists() {
-        let algorithm = Algorithm::new();
+        let algorithm = Algorithm::new(0);
 
         let result = algorithm.generate(10);
 
@@ -55,7 +55,7 @@ mod tests {
 
     #[test]
     fn should_generate_string_using_generator() {
-        let mut algorithm = Algorithm::new();
+        let mut algorithm = Algorithm::new(1);
         algorithm.add_generator(build_test_generator("str1".into()));
 
         let result = algorithm.generate(10);
