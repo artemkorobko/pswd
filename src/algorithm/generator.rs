@@ -1,5 +1,10 @@
 use rand::Rng;
 use rand::prelude::ThreadRng;
+use std::fmt::Debug;
+
+pub trait Generator: Debug {
+    fn generate(&self, sequence_number: usize, initial_value: String, random: &mut ThreadRng) -> String;
+}
 
 const AVERAGE_LENGTH_BOUNDS: usize = 2;
 const SPECIAL_CHARACTERS_TABLE: [char; 29] = [
