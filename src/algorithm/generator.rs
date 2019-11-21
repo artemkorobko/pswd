@@ -13,7 +13,18 @@ pub trait Generator: Debug {
         }
     }
 
-    fn generate_string(&self, length: usize, random: &mut ThreadRng) -> String;
+    fn generate_string(&self, length: usize, random: &mut ThreadRng) -> String {
+        let mut result = String::with_capacity(length);
+
+        for _ in 0..length {
+            let character = self.generate_character(random);
+            result.push(character);
+        }
+
+        result
+    }
+
+    fn generate_character(&self, random: &mut ThreadRng) -> char;
 }
 
 const AVERAGE_LENGTH_BOUNDS: usize = 2;

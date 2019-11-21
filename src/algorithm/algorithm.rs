@@ -20,21 +20,17 @@ impl Algorithm {
     }
 
     pub fn generate(&self, average_length: usize) -> String {
-        if self.generators.is_empty() {
-            String::new()
-        } else {
-            let mut random = rand::thread_rng();
-            let string_length = calculate_string_length(average_length, &mut random);
-            let mut result = String::with_capacity(string_length);
-            let mut iteration = 0;
+        let mut random = rand::thread_rng();
+        let string_length = calculate_string_length(average_length, &mut random);
+        let mut result = String::with_capacity(string_length);
+        let mut iteration = 0;
 
-            for generator in &self.generators {
-                result = generator.generate(iteration, result.clone(), &mut random);
-                iteration += 1;
-            }
-
-            result
+        for generator in &self.generators {
+            result = generator.generate(iteration, result, &mut random);
+            iteration += 1;
         }
+
+        result
     }
 }
 
@@ -51,28 +47,32 @@ mod tests {
         let result = algorithm.generate(10);
 
         assert!(result.is_empty());
+        assert_eq!(algorithm.generators.capacity(), 0);
     }
 
     #[test]
     fn should_generate_string_using_generator() {
+        let average_string_length = 10;
         let mut algorithm = Algorithm::new(1);
-        algorithm.add_generator(build_test_generator("str1".into()));
+        algorithm.add_generator(build_test_generator());
 
-        let result = algorithm.generate(10);
+        let result = algorithm.generate(average_string_length);
 
-        assert_eq!(result, "str1");
+        assert!(result.len() > average_string_length - 2);
+        assert!(result.len() < average_string_length + 2);
+        assert_eq!(algorithm.generators.capacity(), 1);
     }
 
-    fn build_test_generator(payload: String) -> GeneratorPtr {
+    fn build_test_generator() -> GeneratorPtr {
         #[derive(Debug)]
-        struct Gen<>(String);
+        struct Gen<>();
 
         impl Generator for Gen {
-            fn generate_string(&self, length: usize, random: &mut ThreadRng) -> String {
-                self.0.clone()
+            fn generate_character(&self, random: &mut ThreadRng) -> char {
+                'a'
             }
         }
 
-        Box::new(Gen { 0: payload })
+        Box::new(Gen {})
     }
 }
