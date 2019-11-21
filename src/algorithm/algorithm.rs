@@ -56,24 +56,23 @@ mod tests {
     #[test]
     fn should_generate_string_using_generator() {
         let mut algorithm = Algorithm::new();
-        algorithm.add_generator(build_test_generator("str1"))
-            .add_generator(build_test_generator("str2"));
+        algorithm.add_generator(build_test_generator("str1".into()));
 
         let result = algorithm.generate(10);
 
-        assert_eq!(result, "-0-str1-1-str2");
+        assert_eq!(result, "str1");
     }
 
-    fn build_test_generator(payload: &'static str) -> GeneratorPtr {
+    fn build_test_generator(payload: String) -> GeneratorPtr {
         #[derive(Debug)]
-        struct Gen<'a>(&'a str);
+        struct Gen<>(String);
 
-        impl Generator for Gen<'_> {
-            fn generate(&self, sequence_number: usize, initial_value: String, _: &mut ThreadRng) -> String {
-                format!("{}-{}-{}", initial_value, sequence_number, self.0)
+        impl Generator for Gen {
+            fn generate_string(&self, length: usize, random: &mut ThreadRng) -> String {
+                self.0.clone()
             }
         }
 
-        Box::new(Gen { 0: payload.clone() })
+        Box::new(Gen { 0: payload })
     }
 }

@@ -3,7 +3,17 @@ use rand::prelude::ThreadRng;
 use std::fmt::Debug;
 
 pub trait Generator: Debug {
-    fn generate(&self, sequence_number: usize, initial_value: String, random: &mut ThreadRng) -> String;
+    fn generate(&self, sequence_number: usize, initial_value: String, random: &mut ThreadRng) -> String {
+        if sequence_number == 0 {
+            self.generate_string(initial_value.capacity(), random)
+        } else {
+            let expected_length = initial_value.capacity() / (sequence_number + 1);
+            let result = self.generate_string(initial_value.capacity(), random);
+            combine_strings(initial_value, result, random)
+        }
+    }
+
+    fn generate_string(&self, length: usize, random: &mut ThreadRng) -> String;
 }
 
 const AVERAGE_LENGTH_BOUNDS: usize = 2;
@@ -33,4 +43,15 @@ pub fn generate_random_number_letter(thread_rng: &mut ThreadRng) -> char {
 pub fn generate_random_special_character(thread_rng: &mut ThreadRng) -> char {
     let index = thread_rng.gen_range(0, SPECIAL_CHARACTERS_TABLE.len() - 1);
     SPECIAL_CHARACTERS_TABLE[index]
+}
+
+fn combine_strings(left: String, right: String, random: &mut ThreadRng) -> String {
+    let mut characters = left.into_bytes();
+
+    right.chars().for_each(|character| {
+        let target_index = random.gen_range(0, characters.len());
+        characters[target_index] = character as u8;
+    });
+
+    String::from_utf8(characters).unwrap()
 }
