@@ -1,10 +1,9 @@
 use structopt::StructOpt;
-use std::str::FromStr;
 use crate::options::character_type::CharacterType;
 use crate::options::password_length::PasswordLength;
 
 #[derive(StructOpt, Debug)]
-#[structopt(about = "A password generation tool", author = "Artem Korobko")]
+#[structopt(about = "Password generation tool")]
 pub struct Options {
     #[structopt(short, long, possible_values = &CharacterType::variants(),
     case_insensitive = true, default_value = "l,u,n", use_delimiter = true, help = "Character types")]

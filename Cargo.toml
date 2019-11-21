@@ -3,7 +3,7 @@ name = "pswd"
 version = "1.0.0"
 authors = ["Artem Korobko <artem.korobko@sizmek.com>"]
 edition = "2018"
-description = "A password generation tool"
+description = "Password generation tool"
 
 [dependencies]
 rand = "0.7"
