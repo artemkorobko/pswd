@@ -1,13 +1,13 @@
 use rand::prelude::ThreadRng;
 use crate::options::character_type::CharacterType;
 use crate::options::password_length::PasswordLength;
-use crate::algorithm::generator::{generate_random_lowercase_letter, calculate_password_length, generate_random_uppercase_letter, generate_random_number_letter, generate_random_special_character};
+use crate::algorithm::generator::{generate_random_lowercase_letter, calculate_string_length, generate_random_uppercase_letter, generate_random_number_letter, generate_random_special_character};
 use rand::Rng;
 
 pub fn generate_simple(password_length: &PasswordLength, character_types: &Vec<CharacterType>) -> String {
     let average_length = to_average_length(password_length);
     let mut thread_rng = rand::thread_rng();
-    let mut password_length = calculate_password_length(average_length, &mut thread_rng);
+    let mut password_length = calculate_string_length(average_length, &mut thread_rng);
     let mut password = String::with_capacity(password_length);
 
     for character_type in character_types {

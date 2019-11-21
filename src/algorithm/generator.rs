@@ -12,14 +12,14 @@ const SPECIAL_CHARACTERS_TABLE: [char; 29] = [
     '<', '=', '>', '?', '@', '[', ']', '^', '_', '`', '{', '|', '}', '~'
 ];
 
-pub fn calculate_password_length(average_length: usize, thread_rng: &mut ThreadRng) -> usize {
+pub fn calculate_string_length(average_length: usize, thread_rng: &mut ThreadRng) -> usize {
     let min_length = average_length - AVERAGE_LENGTH_BOUNDS;
     let max_length = average_length + AVERAGE_LENGTH_BOUNDS;
     thread_rng.gen_range(min_length, max_length)
 }
 
-pub fn generate_random_lowercase_letter(thread_rng: &mut ThreadRng) -> char {
-    thread_rng.gen_range::<u8, u8, u8>(97, 123) as char
+pub fn generate_random_lowercase_letter(random: &mut ThreadRng) -> char {
+    random.gen_range::<u8, u8, u8>(97, 123) as char
 }
 
 pub fn generate_random_uppercase_letter(thread_rng: &mut ThreadRng) -> char {
