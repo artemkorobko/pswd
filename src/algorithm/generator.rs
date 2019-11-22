@@ -1,5 +1,5 @@
 use rand::Rng;
-use rand::prelude::ThreadRng;
+use rand::rngs::ThreadRng;
 use std::fmt::Debug;
 
 pub trait Generator: Debug {

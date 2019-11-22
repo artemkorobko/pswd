@@ -1,5 +1,5 @@
 use rand::Rng;
-use rand::prelude::ThreadRng;
+use rand::rngs::ThreadRng;
 use crate::algorithm::generator::Generator;
 
 const NUMBER_CODE_0: u8 = 48;

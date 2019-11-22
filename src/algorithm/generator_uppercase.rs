@@ -1,5 +1,5 @@
 use rand::Rng;
-use rand::prelude::ThreadRng;
+use rand::rngs::ThreadRng;
 use crate::algorithm::generator::Generator;
 
 const UPPERCASE_CHARACTER_CODE_A: u8 = 65;

@@ -5,3 +5,4 @@ pub mod generator_number;
 pub mod generator_symbol;
 pub mod generator_tokenizer;
 pub mod generator_uppercase;
+mod initial_password;

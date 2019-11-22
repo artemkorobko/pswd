@@ -1,5 +1,5 @@
 use rand::Rng;
-use rand::prelude::ThreadRng;
+use rand::rngs::ThreadRng;
 use crate::algorithm::generator::Generator;
 
 const SYMBOLS_TABLE: [char; 29] = [
