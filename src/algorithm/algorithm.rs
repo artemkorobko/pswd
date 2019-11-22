@@ -22,15 +22,15 @@ impl Algorithm {
 
     pub fn generate_password(&self, average_string_length: usize) -> String {
         let mut random = rand::thread_rng();
-        let mut result_string = build_initial_password(average_string_length, &mut random);
-        let mut current_iteration_num = 0;
+        let mut password = build_initial_password(average_string_length, &mut random);
+        let mut iteration_number = 0;
 
         for generator in &self.generators {
-            result_string = generator.generate(current_iteration_num, result_string, &mut random);
-            current_iteration_num += 1;
+            password = generator.generate(iteration_number, password, &mut random);
+            iteration_number += 1;
         }
 
-        result_string
+        password
     }
 }
 
@@ -63,7 +63,7 @@ mod tests {
     #[test]
     fn should_generate_string_using_generator() {
         let expected_char = 'a';
-        let total_generators = 0;
+        let total_generators = 1;
         let average_string_length = 10;
         let mut algorithm = Algorithm::new(total_generators);
         algorithm.add_generator(build_test_generator(expected_char));
@@ -71,9 +71,9 @@ mod tests {
         let result = algorithm.generate_password(average_string_length);
 
         assert!(!result.is_empty());
-        for char in result.chars() {
-            assert_eq!(char, expected_char);
-        }
+        result.chars().for_each(|character| {
+            assert_eq!(character, expected_char);
+        });
     }
 
     fn build_test_generator(payload: char) -> GeneratorPtr {
