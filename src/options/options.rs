@@ -12,7 +12,7 @@ pub struct Options {
     case_insensitive = true, default_value = "r", help = "Password length")]
     pub length: PasswordLength,
     #[structopt(short, long, default_value = "1", help = "Number of passwords to generate")]
-    pub num: u8,
+    pub num: usize,
     #[structopt(short, long, default_value = "3", help = "Number of password tokens")]
     pub tokens: usize
 }

@@ -20,9 +20,9 @@ impl Algorithm {
         self
     }
 
-    pub fn generate_password(&self, average_string_length: usize) -> String {
+    pub fn generate_password(&self, average_password_length: usize) -> String {
         let mut random = rand::thread_rng();
-        let mut password = build_initial_password(average_string_length, &mut random);
+        let mut password = build_initial_password(average_password_length, &mut random);
         let mut iteration_number = 0;
 
         for generator in &self.generators {

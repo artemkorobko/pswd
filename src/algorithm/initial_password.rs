@@ -3,8 +3,8 @@ use rand::rngs::ThreadRng;
 
 const AVERAGE_LENGTH_BOUNDS: usize = 2;
 
-pub fn build_initial_password(average_string_length: usize, mut random: &mut ThreadRng) -> String {
-    let string_length = calculate_string_length(average_string_length, &mut random);
+pub fn build_initial_password(average_password_length: usize, mut random: &mut ThreadRng) -> String {
+    let string_length = calculate_string_length(average_password_length, &mut random);
     String::with_capacity(string_length)
 }
 
