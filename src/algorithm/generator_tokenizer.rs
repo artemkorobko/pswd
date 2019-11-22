@@ -17,14 +17,14 @@ impl GeneratorTokenizer {
 }
 
 impl Generator for GeneratorTokenizer {
-    fn generate(&self, sequence_number: usize, initial_value: String, random: &mut ThreadRng) -> String {
+    fn generate(&self, _: usize, initial_value: String, _: &mut ThreadRng) -> String {
         let bytes = initial_value.into_bytes();
         bytes.chunks(bytes.len() / self.tokens)
             .map(|chunk| String::from_utf8(chunk.to_vec()).unwrap())
             .join(TOKEN_SEPARATOR)
     }
 
-    fn generate_character(&self, random: &mut ThreadRng) -> char {
+    fn generate_character(&self, _: &mut ThreadRng) -> char {
         unimplemented!()
     }
 }

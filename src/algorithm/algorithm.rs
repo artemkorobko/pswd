@@ -68,7 +68,7 @@ mod tests {
         struct Gen<>();
 
         impl Generator for Gen {
-            fn generate_character(&self, random: &mut ThreadRng) -> char {
+            fn generate_character(&self, _: &mut ThreadRng) -> char {
                 'a'
             }
         }
