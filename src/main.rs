@@ -33,7 +33,7 @@ fn main() {
     };
 
     for _ in 0..options.num {
-        let password = algorithm.generate(average_string_length);
+        let password = algorithm.generate_password(average_string_length);
         println!("{}", password);
     }
 }

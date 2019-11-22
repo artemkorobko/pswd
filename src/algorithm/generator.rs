@@ -27,14 +27,6 @@ pub trait Generator: Debug {
     fn generate_character(&self, random: &mut ThreadRng) -> char;
 }
 
-const AVERAGE_LENGTH_BOUNDS: usize = 2;
-
-pub fn calculate_string_length(average_length: usize, thread_rng: &mut ThreadRng) -> usize {
-    let min_length = average_length - AVERAGE_LENGTH_BOUNDS;
-    let max_length = average_length + AVERAGE_LENGTH_BOUNDS;
-    thread_rng.gen_range(min_length, max_length)
-}
-
 fn combine_strings(left: String, right: String, random: &mut ThreadRng) -> String {
     let mut characters = left.into_bytes();
 
