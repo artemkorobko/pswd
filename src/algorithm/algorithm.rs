@@ -1,6 +1,4 @@
 use crate::algorithm::generator::{Generator, calculate_string_length};
-use rand::prelude::ThreadRng;
-use rand::random;
 
 pub type GeneratorPtr = Box<dyn Generator>;
 

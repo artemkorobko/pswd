@@ -1,6 +1,5 @@
-use rand::Rng;
-use rand::prelude::ThreadRng;
 use itertools::Itertools;
+use rand::prelude::ThreadRng;
 use crate::algorithm::generator::Generator;
 
 const TOKEN_SEPARATOR: &str = "-";
