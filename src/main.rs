@@ -15,7 +15,7 @@ fn main() {
             CharacterType::LowerCase => Box::new(algorithm::generator_lowercase::GeneratorLowerCase) as GeneratorPtr,
             CharacterType::UpperCase => Box::new(algorithm::generator_uppercase::GeneratorUpperCase) as GeneratorPtr,
             CharacterType::Numbers => Box::new(algorithm::generator_number::GeneratorNumber) as GeneratorPtr,
-            CharacterType::SpecialCharacters => Box::new(algorithm::generator_symbol::GeneratorSymbol) as GeneratorPtr,
+            CharacterType::Symbols => Box::new(algorithm::generator_symbol::GeneratorSymbol) as GeneratorPtr,
         };
 
         algorithm.add_generator(generator);
