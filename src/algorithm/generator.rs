@@ -39,23 +39,6 @@ pub fn calculate_string_length(average_length: usize, thread_rng: &mut ThreadRng
     thread_rng.gen_range(min_length, max_length)
 }
 
-pub fn generate_random_lowercase_letter(random: &mut ThreadRng) -> char {
-    random.gen_range::<u8, u8, u8>(97, 123) as char
-}
-
-pub fn generate_random_uppercase_letter(thread_rng: &mut ThreadRng) -> char {
-    thread_rng.gen_range::<u8, u8, u8>(65, 91) as char
-}
-
-pub fn generate_random_number_letter(thread_rng: &mut ThreadRng) -> char {
-    thread_rng.gen_range::<u8, u8, u8>(48, 58) as char
-}
-
-pub fn generate_random_special_character(thread_rng: &mut ThreadRng) -> char {
-    let index = thread_rng.gen_range(0, SPECIAL_CHARACTERS_TABLE.len() - 1);
-    SPECIAL_CHARACTERS_TABLE[index]
-}
-
 fn combine_strings(left: String, right: String, random: &mut ThreadRng) -> String {
     let mut characters = left.into_bytes();
 
