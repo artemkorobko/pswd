@@ -28,10 +28,6 @@ pub trait Generator: Debug {
 }
 
 const AVERAGE_LENGTH_BOUNDS: usize = 2;
-const SPECIAL_CHARACTERS_TABLE: [char; 29] = [
-    '!', '#', '$', '%', '&', '(', ')', '*', '+', ',', '-', '.', '/', ':', ';',
-    '<', '=', '>', '?', '@', '[', ']', '^', '_', '`', '{', '|', '}', '~'
-];
 
 pub fn calculate_string_length(average_length: usize, thread_rng: &mut ThreadRng) -> usize {
     let min_length = average_length - AVERAGE_LENGTH_BOUNDS;
