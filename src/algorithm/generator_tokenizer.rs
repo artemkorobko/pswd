@@ -1,12 +1,12 @@
+use crate::algorithm::generator::Generator;
 use itertools::Itertools;
 use rand::rngs::ThreadRng;
-use crate::algorithm::generator::Generator;
 
 const TOKEN_SEPARATOR: &str = "-";
 
 #[derive(Debug)]
 pub struct GeneratorTokenizer {
-    tokens_count: usize
+    tokens_count: usize,
 }
 
 impl GeneratorTokenizer {
@@ -18,7 +18,8 @@ impl GeneratorTokenizer {
 impl Generator for GeneratorTokenizer {
     fn generate(&self, _: usize, initial_value: String, _: &mut ThreadRng) -> String {
         let bytes = initial_value.into_bytes();
-        bytes.chunks(bytes.len() / self.tokens_count)
+        bytes
+            .chunks(bytes.len() / self.tokens_count)
             .map(|chunk| String::from_utf8(chunk.to_vec()).unwrap())
             .join(TOKEN_SEPARATOR)
     }
@@ -30,8 +31,8 @@ impl Generator for GeneratorTokenizer {
 
 #[cfg(test)]
 mod tests {
-    use crate::algorithm::generator_tokenizer::*;
     use crate::algorithm::generator::Generator;
+    use crate::algorithm::generator_tokenizer::*;
 
     #[test]
     fn should_generate_random_character_in_range() {

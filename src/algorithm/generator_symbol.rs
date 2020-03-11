@@ -1,10 +1,10 @@
-use rand::Rng;
-use rand::rngs::ThreadRng;
 use crate::algorithm::generator::Generator;
+use rand::rngs::ThreadRng;
+use rand::Rng;
 
 const SYMBOLS_TABLE: [char; 29] = [
-    '!', '#', '$', '%', '&', '(', ')', '*', '+', ',', '-', '.', '/', ':', ';',
-    '<', '=', '>', '?', '@', '[', ']', '^', '_', '`', '{', '|', '}', '~'
+    '!', '#', '$', '%', '&', '(', ')', '*', '+', ',', '-', '.', '/', ':', ';', '<', '=', '>', '?',
+    '@', '[', ']', '^', '_', '`', '{', '|', '}', '~',
 ];
 
 #[derive(Debug)]
@@ -19,8 +19,8 @@ impl Generator for GeneratorSymbol {
 
 #[cfg(test)]
 mod tests {
-    use crate::algorithm::generator_symbol::*;
     use crate::algorithm::generator::Generator;
+    use crate::algorithm::generator_symbol::*;
 
     #[test]
     fn should_generate_random_character_in_range() {

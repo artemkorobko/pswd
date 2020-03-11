@@ -1,9 +1,14 @@
-use rand::Rng;
 use rand::rngs::ThreadRng;
+use rand::Rng;
 use std::fmt::Debug;
 
 pub trait Generator: Debug {
-    fn generate(&self, sequence_number: usize, initial_value: String, random: &mut ThreadRng) -> String {
+    fn generate(
+        &self,
+        sequence_number: usize,
+        initial_value: String,
+        random: &mut ThreadRng,
+    ) -> String {
         if sequence_number == 0 {
             self.generate_string(initial_value.capacity(), random)
         } else {

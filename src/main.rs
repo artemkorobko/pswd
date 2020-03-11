@@ -1,12 +1,12 @@
-use crate::options::options::Options;
-use crate::options::character_type::CharacterType;
-use crate::options::password_length::PasswordLength;
-use crate::algorithm::algorithm::{GeneratorPtr, Algorithm};
+use crate::algorithm::algorithm::{Algorithm, GeneratorPtr};
 use crate::algorithm::generator_lowercase::GeneratorLowerCase;
-use crate::algorithm::generator_uppercase::GeneratorUpperCase;
 use crate::algorithm::generator_number::GeneratorNumber;
 use crate::algorithm::generator_symbol::GeneratorSymbol;
 use crate::algorithm::generator_tokenizer::GeneratorTokenizer;
+use crate::algorithm::generator_uppercase::GeneratorUpperCase;
+use crate::options::character_type::CharacterType;
+use crate::options::options::Options;
+use crate::options::password_length::PasswordLength;
 use clipboard::{ClipboardContext, ClipboardProvider};
 use std::error::Error;
 
@@ -26,7 +26,10 @@ fn main() {
     }
 }
 
-fn configure_algorithm_and_generate_passwords(options: &Options, mut algorithm: &mut Algorithm) -> String {
+fn configure_algorithm_and_generate_passwords(
+    options: &Options,
+    mut algorithm: &mut Algorithm,
+) -> String {
     configure_algorithm_generators(&options.chars, &mut algorithm);
     configure_algorithm_tokenizer(options.tokens, &mut algorithm);
     let average_password_length = calculate_average_password_length(&options.length);
@@ -61,7 +64,11 @@ fn calculate_average_password_length(password_length: &PasswordLength) -> usize 
     }
 }
 
-fn generate_passwords(count: usize, algorithm: &Algorithm, average_password_length: usize) -> String {
+fn generate_passwords(
+    count: usize,
+    algorithm: &Algorithm,
+    average_password_length: usize,
+) -> String {
     let mut last_password = String::new();
 
     for _ in 0..count {

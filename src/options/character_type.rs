@@ -1,5 +1,5 @@
-use std::str::FromStr;
 use crate::options::character_type_error::UnsupportedCharacterTypeError;
+use std::str::FromStr;
 
 const LOWER_CASE_LONG_PARAMETER_KEY: &str = "lower-case";
 const LOWER_CASE_SHORT_PARAMETER_KEY: &str = "l";
@@ -21,10 +21,14 @@ pub enum CharacterType {
 impl CharacterType {
     pub fn variants() -> Vec<&'static str> {
         vec![
-            LOWER_CASE_LONG_PARAMETER_KEY, LOWER_CASE_SHORT_PARAMETER_KEY,
-            UPPER_CASE_LONG_PARAMETER_KEY, UPPER_CASE_SHORT_PARAMETER_KEY,
-            NUMBERS_LONG_PARAMETER_KEY, NUMBERS_SHORT_PARAMETER_KEY,
-            SYMBOLS_LONG_PARAMETER_KEY, SYMBOLS_SHORT_PARAMETER_KEY
+            LOWER_CASE_LONG_PARAMETER_KEY,
+            LOWER_CASE_SHORT_PARAMETER_KEY,
+            UPPER_CASE_LONG_PARAMETER_KEY,
+            UPPER_CASE_SHORT_PARAMETER_KEY,
+            NUMBERS_LONG_PARAMETER_KEY,
+            NUMBERS_SHORT_PARAMETER_KEY,
+            SYMBOLS_LONG_PARAMETER_KEY,
+            SYMBOLS_SHORT_PARAMETER_KEY,
         ]
     }
 }
@@ -34,31 +38,42 @@ impl FromStr for CharacterType {
 
     fn from_str(string: &str) -> Result<Self, Self::Err> {
         match string.to_lowercase().as_ref() {
-            LOWER_CASE_LONG_PARAMETER_KEY | LOWER_CASE_SHORT_PARAMETER_KEY => Ok(CharacterType::LowerCase),
-            UPPER_CASE_LONG_PARAMETER_KEY | UPPER_CASE_SHORT_PARAMETER_KEY => Ok(CharacterType::UpperCase),
+            LOWER_CASE_LONG_PARAMETER_KEY | LOWER_CASE_SHORT_PARAMETER_KEY => {
+                Ok(CharacterType::LowerCase)
+            }
+            UPPER_CASE_LONG_PARAMETER_KEY | UPPER_CASE_SHORT_PARAMETER_KEY => {
+                Ok(CharacterType::UpperCase)
+            }
             NUMBERS_LONG_PARAMETER_KEY | NUMBERS_SHORT_PARAMETER_KEY => Ok(CharacterType::Numbers),
             SYMBOLS_LONG_PARAMETER_KEY | SYMBOLS_SHORT_PARAMETER_KEY => Ok(CharacterType::Symbols),
-            _ => Err(UnsupportedCharacterTypeError)
+            _ => Err(UnsupportedCharacterTypeError),
         }
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use std::str::FromStr;
     use crate::options::character_type::*;
     use crate::options::character_type_error::UnsupportedCharacterTypeError;
+    use std::str::FromStr;
 
     #[test]
     fn should_return_command_variants() {
         let variants = CharacterType::variants();
 
-        assert_eq!(variants, vec![
-            LOWER_CASE_LONG_PARAMETER_KEY, LOWER_CASE_SHORT_PARAMETER_KEY,
-            UPPER_CASE_LONG_PARAMETER_KEY, UPPER_CASE_SHORT_PARAMETER_KEY,
-            NUMBERS_LONG_PARAMETER_KEY, NUMBERS_SHORT_PARAMETER_KEY,
-            SYMBOLS_LONG_PARAMETER_KEY, SYMBOLS_SHORT_PARAMETER_KEY
-        ]);
+        assert_eq!(
+            variants,
+            vec![
+                LOWER_CASE_LONG_PARAMETER_KEY,
+                LOWER_CASE_SHORT_PARAMETER_KEY,
+                UPPER_CASE_LONG_PARAMETER_KEY,
+                UPPER_CASE_SHORT_PARAMETER_KEY,
+                NUMBERS_LONG_PARAMETER_KEY,
+                NUMBERS_SHORT_PARAMETER_KEY,
+                SYMBOLS_LONG_PARAMETER_KEY,
+                SYMBOLS_SHORT_PARAMETER_KEY
+            ]
+        );
     }
 
     #[test]

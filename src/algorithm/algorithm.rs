@@ -5,13 +5,13 @@ pub type GeneratorPtr = Box<dyn Generator>;
 
 #[derive(Debug)]
 pub struct Algorithm {
-    generators: Vec<GeneratorPtr>
+    generators: Vec<GeneratorPtr>,
 }
 
 impl Algorithm {
     pub fn new(total_generators: usize) -> Self {
         Self {
-            generators: Vec::with_capacity(total_generators)
+            generators: Vec::with_capacity(total_generators),
         }
     }
 
@@ -36,9 +36,9 @@ impl Algorithm {
 
 #[cfg(test)]
 mod tests {
-    use rand::rngs::ThreadRng;
     use crate::algorithm::algorithm::*;
     use crate::algorithm::generator::Generator;
+    use rand::rngs::ThreadRng;
 
     #[test]
     fn should_create_algorithm_with_predefined_amount_of_generators() {

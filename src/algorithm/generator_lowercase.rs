@@ -1,6 +1,6 @@
-use rand::Rng;
-use rand::rngs::ThreadRng;
 use crate::algorithm::generator::Generator;
+use rand::rngs::ThreadRng;
+use rand::Rng;
 
 const LOWERCASE_CHARACTER_CODE_A: u8 = 97;
 const LOWERCASE_CHARACTER_CODE_Z: u8 = 122;
@@ -10,14 +10,16 @@ pub struct GeneratorLowerCase;
 
 impl Generator for GeneratorLowerCase {
     fn generate_character(&self, random: &mut ThreadRng) -> char {
-        random.gen_range(LOWERCASE_CHARACTER_CODE_A, LOWERCASE_CHARACTER_CODE_Z + 1).into()
+        random
+            .gen_range(LOWERCASE_CHARACTER_CODE_A, LOWERCASE_CHARACTER_CODE_Z + 1)
+            .into()
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::algorithm::generator_lowercase::*;
     use crate::algorithm::generator::Generator;
+    use crate::algorithm::generator_lowercase::*;
 
     #[test]
     fn should_generate_random_character_in_range() {

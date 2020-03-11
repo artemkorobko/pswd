@@ -1,6 +1,6 @@
-use rand::Rng;
-use rand::rngs::ThreadRng;
 use crate::algorithm::generator::Generator;
+use rand::rngs::ThreadRng;
+use rand::Rng;
 
 const NUMBER_CODE_0: u8 = 48;
 const NUMBER_CODE_9: u8 = 57;
@@ -16,8 +16,8 @@ impl Generator for GeneratorNumber {
 
 #[cfg(test)]
 mod tests {
-    use crate::algorithm::generator_number::*;
     use crate::algorithm::generator::Generator;
+    use crate::algorithm::generator_number::*;
 
     #[test]
     fn should_generate_random_number_in_range() {

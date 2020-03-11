@@ -1,5 +1,5 @@
-use std::str::FromStr;
 use crate::options::password_length_error::UnsupportedPasswordLengthError;
+use std::str::FromStr;
 
 const SHORT_LENGTH_LONG_PARAMETER_KEY: &str = "short";
 const SHORT_LENGTH_SHORT_PARAMETER_KEY: &str = "s";
@@ -18,9 +18,12 @@ pub enum PasswordLength {
 impl PasswordLength {
     pub fn variants() -> Vec<&'static str> {
         vec![
-            SHORT_LENGTH_LONG_PARAMETER_KEY, SHORT_LENGTH_SHORT_PARAMETER_KEY,
-            REGULAR_LENGTH_LONG_PARAMETER_KEY, REGULAR_LENGTH_SHORT_PARAMETER_KEY,
-            LONG_LENGTH_LONG_PARAMETER_KEY, LONG_LENGTH_SHORT_PARAMETER_KEY
+            SHORT_LENGTH_LONG_PARAMETER_KEY,
+            SHORT_LENGTH_SHORT_PARAMETER_KEY,
+            REGULAR_LENGTH_LONG_PARAMETER_KEY,
+            REGULAR_LENGTH_SHORT_PARAMETER_KEY,
+            LONG_LENGTH_LONG_PARAMETER_KEY,
+            LONG_LENGTH_SHORT_PARAMETER_KEY,
         ]
     }
 }
@@ -30,29 +33,41 @@ impl FromStr for PasswordLength {
 
     fn from_str(string: &str) -> Result<Self, Self::Err> {
         match string.to_lowercase().as_ref() {
-            SHORT_LENGTH_LONG_PARAMETER_KEY | SHORT_LENGTH_SHORT_PARAMETER_KEY => Ok(PasswordLength::Short),
-            REGULAR_LENGTH_LONG_PARAMETER_KEY | REGULAR_LENGTH_SHORT_PARAMETER_KEY => Ok(PasswordLength::Regular),
-            LONG_LENGTH_LONG_PARAMETER_KEY | LONG_LENGTH_SHORT_PARAMETER_KEY => Ok(PasswordLength::Long),
-            _ => Err(UnsupportedPasswordLengthError)
+            SHORT_LENGTH_LONG_PARAMETER_KEY | SHORT_LENGTH_SHORT_PARAMETER_KEY => {
+                Ok(PasswordLength::Short)
+            }
+            REGULAR_LENGTH_LONG_PARAMETER_KEY | REGULAR_LENGTH_SHORT_PARAMETER_KEY => {
+                Ok(PasswordLength::Regular)
+            }
+            LONG_LENGTH_LONG_PARAMETER_KEY | LONG_LENGTH_SHORT_PARAMETER_KEY => {
+                Ok(PasswordLength::Long)
+            }
+            _ => Err(UnsupportedPasswordLengthError),
         }
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use std::str::FromStr;
     use crate::options::password_length::*;
     use crate::options::password_length_error::UnsupportedPasswordLengthError;
+    use std::str::FromStr;
 
     #[test]
     fn should_return_command_variants() {
         let variants = PasswordLength::variants();
 
-        assert_eq!(variants, vec![
-            SHORT_LENGTH_LONG_PARAMETER_KEY, SHORT_LENGTH_SHORT_PARAMETER_KEY,
-            REGULAR_LENGTH_LONG_PARAMETER_KEY, REGULAR_LENGTH_SHORT_PARAMETER_KEY,
-            LONG_LENGTH_LONG_PARAMETER_KEY, LONG_LENGTH_SHORT_PARAMETER_KEY
-        ]);
+        assert_eq!(
+            variants,
+            vec![
+                SHORT_LENGTH_LONG_PARAMETER_KEY,
+                SHORT_LENGTH_SHORT_PARAMETER_KEY,
+                REGULAR_LENGTH_LONG_PARAMETER_KEY,
+                REGULAR_LENGTH_SHORT_PARAMETER_KEY,
+                LONG_LENGTH_LONG_PARAMETER_KEY,
+                LONG_LENGTH_SHORT_PARAMETER_KEY
+            ]
+        );
     }
 
     #[test]

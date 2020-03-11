@@ -1,6 +1,6 @@
-use rand::Rng;
-use rand::rngs::ThreadRng;
 use crate::algorithm::generator::Generator;
+use rand::rngs::ThreadRng;
+use rand::Rng;
 
 const UPPERCASE_CHARACTER_CODE_A: u8 = 65;
 const UPPERCASE_CHARACTER_CODE_Z: u8 = 90;
@@ -10,14 +10,16 @@ pub struct GeneratorUpperCase;
 
 impl Generator for GeneratorUpperCase {
     fn generate_character(&self, random: &mut ThreadRng) -> char {
-        random.gen_range(UPPERCASE_CHARACTER_CODE_A, UPPERCASE_CHARACTER_CODE_Z + 1).into()
+        random
+            .gen_range(UPPERCASE_CHARACTER_CODE_A, UPPERCASE_CHARACTER_CODE_Z + 1)
+            .into()
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::algorithm::generator_uppercase::*;
     use crate::algorithm::generator::Generator;
+    use crate::algorithm::generator_uppercase::*;
 
     #[test]
     fn should_generate_random_character_in_range() {
