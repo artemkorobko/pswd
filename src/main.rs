@@ -33,10 +33,10 @@ fn configure_algorithm_and_generate_passwords(
     configure_algorithm_generators(&options.chars, &mut algorithm);
     configure_algorithm_tokenizer(options.tokens, &mut algorithm);
     let average_password_length = calculate_average_password_length(&options.length);
-    generate_passwords(options.num, &mut algorithm, average_password_length)
+    generate_passwords(options.num, &algorithm, average_password_length)
 }
 
-fn configure_algorithm_generators(character_types: &Vec<CharacterType>, algorithm: &mut Algorithm) {
+fn configure_algorithm_generators(character_types: &[CharacterType], algorithm: &mut Algorithm) {
     for character_type in character_types {
         let generator = match character_type {
             CharacterType::LowerCase => Box::new(GeneratorLowerCase) as GeneratorPtr,
