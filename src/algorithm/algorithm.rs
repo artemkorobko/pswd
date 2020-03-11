@@ -23,11 +23,9 @@ impl Algorithm {
     pub fn generate_password(&self, average_password_length: usize) -> String {
         let mut random = rand::thread_rng();
         let mut password = build_initial_password(average_password_length, &mut random);
-        let mut iteration_number = 0;
 
-        for generator in &self.generators {
-            password = generator.generate(iteration_number, password, &mut random);
-            iteration_number += 1;
+        for (sequence_number, generator) in self.generators.iter().enumerate() {
+            password = generator.generate(sequence_number, password, &mut random);
         }
 
         password
