@@ -14,7 +14,9 @@ pub struct Options {
     #[structopt(short, long, default_value = "1", help = "Number of passwords to generate")]
     pub num: usize,
     #[structopt(short, long, default_value = "3", help = "Number of password tokens")]
-    pub tokens: usize
+    pub tokens: usize,
+    #[structopt(long, help = "Copy last generated password to the clipboard")]
+    pub copy: Option<bool>,
 }
 
 impl Options {

@@ -7,6 +7,8 @@ use crate::algorithm::generator_uppercase::GeneratorUpperCase;
 use crate::algorithm::generator_number::GeneratorNumber;
 use crate::algorithm::generator_symbol::GeneratorSymbol;
 use crate::algorithm::generator_tokenizer::GeneratorTokenizer;
+use clipboard::{ClipboardContext, ClipboardProvider};
+use std::error::Error;
 
 mod algorithm;
 mod options;
@@ -14,10 +16,17 @@ mod options;
 fn main() {
     let options = Options::from_args();
     let mut algorithm = Algorithm::new(options.chars.len());
-    configure_algorithm_and_generate_passwords(&options, &mut algorithm);
+    let last_password = configure_algorithm_and_generate_passwords(&options, &mut algorithm);
+
+    if options.copy.unwrap_or(true) && !last_password.is_empty() {
+        match copy_password_to_the_clipboard(last_password) {
+            Ok(_) => println!("The generated password has been copied to the clipboard"),
+            Err(_) => println!("The generated password cannot be copied to the clipboard"),
+        }
+    }
 }
 
-fn configure_algorithm_and_generate_passwords(options: &Options, mut algorithm: &mut Algorithm) {
+fn configure_algorithm_and_generate_passwords(options: &Options, mut algorithm: &mut Algorithm) -> String {
     configure_algorithm_generators(&options.chars, &mut algorithm);
     configure_algorithm_tokenizer(options.tokens, &mut algorithm);
     let average_password_length = calculate_average_password_length(&options.length);
@@ -52,9 +61,17 @@ fn calculate_average_password_length(password_length: &PasswordLength) -> usize 
     }
 }
 
-fn generate_passwords(count: usize, algorithm: &Algorithm, average_password_length: usize) -> () {
+fn generate_passwords(count: usize, algorithm: &Algorithm, average_password_length: usize) -> String {
+    let mut last_password = String::new();
+
     for _ in 0..count {
-        let password = algorithm.generate_password(average_password_length);
-        println!("{}", password);
+        last_password = algorithm.generate_password(average_password_length);
+        println!("{}", last_password);
     }
+
+    last_password
+}
+
+fn copy_password_to_the_clipboard(password: String) -> Result<(), Box<dyn Error>> {
+    ClipboardContext::new()?.set_contents(password)
 }
