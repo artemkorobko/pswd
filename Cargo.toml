@@ -10,3 +10,6 @@ rand = "0.7"
 structopt = "0.3"
 itertools = "0.9"
 clipboard = "0.5"
+
+[dev-dependencies]
+spectral = "0.6"
