@@ -13,6 +13,7 @@ use structopt::StructOpt;
 
 mod algorithm;
 mod options;
+mod password;
 
 fn main() {
     let options = Options::from_args();
