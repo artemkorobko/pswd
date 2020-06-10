@@ -9,6 +9,7 @@ use crate::options::options::Options;
 use crate::options::password_length::PasswordLength;
 use clipboard::{ClipboardContext, ClipboardProvider};
 use std::error::Error;
+use structopt::StructOpt;
 
 mod algorithm;
 mod options;

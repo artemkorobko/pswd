@@ -23,9 +23,3 @@ pub struct Options {
     #[structopt(long, help = "Copy last generated password to the clipboard")]
     pub copy: Option<bool>,
 }
-
-impl Options {
-    pub fn from_args() -> Self {
-        <Self as StructOpt>::from_args()
-    }
-}
