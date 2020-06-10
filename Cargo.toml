@@ -1,6 +1,6 @@
 [package]
 name = "pswd"
-version = "1.0.0"
+version = "1.1.0"
 authors = ["Artem Korobko <artem.korobko@sizmek.com>"]
 edition = "2018"
 description = "Password generation tool"
@@ -8,5 +8,5 @@ description = "Password generation tool"
 [dependencies]
 rand = "0.7"
 structopt = "0.3"
-itertools = "0.8"
+itertools = "0.9"
 clipboard = "0.5"
