@@ -1,15 +1,13 @@
 [package]
 name = "pswd"
-version = "1.1.0"
-authors = ["Artem Korobko <artem.korobko@sizmek.com>"]
-edition = "2018"
-description = "Password generation tool"
+version = "1.2.0"
+edition = "2021"
 
 [dependencies]
-rand = "0.7"
-structopt = "0.3"
-itertools = "0.9"
+anyhow = "1.0"
 clipboard = "0.5"
+rand = "0.8"
+structopt = "0.3"
 
 [dev-dependencies]
-spectral = "0.6"
+rstest = "0.15"
