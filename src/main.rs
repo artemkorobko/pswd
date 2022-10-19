@@ -24,7 +24,7 @@ fn create_password_buffer(len: usize, tokens: usize) -> Vec<u8> {
 
 fn build_generators_chain() -> impl Generator {
     let baseline = generator::Baseline::default();
-    let upper_case = generator::UpperCaseLetter::new(0.2);
+    let upper_case = generator::UpperCaseLetter::new(0.1);
     let digit = generator::Digit::new(0.05);
     baseline.and_then(upper_case).and_then(digit)
 }
