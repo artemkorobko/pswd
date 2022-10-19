@@ -14,8 +14,8 @@ fn main() {
 }
 
 fn create_password_buffer(len: usize, tokens: usize) -> Vec<u8> {
-    let total_len = (len * tokens) + 2;
-    let mut password = vec![0u8; total_len];
+    let max_len = (len * tokens) + 2;
+    let mut password = vec![0u8; max_len];
     for pos in 1..tokens {
         password[(pos * (len + 1)) - 1] = b'-';
     }
