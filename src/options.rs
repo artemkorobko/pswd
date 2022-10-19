@@ -2,38 +2,36 @@ use std::str::FromStr;
 
 use structopt::StructOpt;
 
+/// Secure password generator
 #[derive(StructOpt, Debug)]
 #[structopt()]
 pub struct Args {
+    /// Password length
     #[structopt(
         short,
         long,
-        possible_values = &["short", "s", "medium", "m", "long", "l"],
-        default_value = "l",
-        help = "Password length"
+        possible_values = &["small", "s", "medium", "m", "large", "l"],
+        default_value = "s",
     )]
     pub length: PasswordLength,
+    /// Number of password tokens separated by dash
     #[structopt(
         short,
         long,
         possible_values = &["1", "2", "3"],
         default_value = "3",
-        help = "Number of password tokens separated by dash"
     )]
     pub tokens: usize,
-    #[structopt(
-        short,
-        long,
-        help = "Doesn't copy last generated password to the clipboard"
-    )]
-    pub ignore_clipboard: bool,
+    /// Copy password to clipboard
+    #[structopt(short, long)]
+    pub clipboard: bool,
 }
 
 #[derive(Debug, Eq, PartialEq)]
 pub enum PasswordLength {
-    Short,
+    Small,
     Medium,
-    Long,
+    Large,
 }
 
 impl FromStr for PasswordLength {
@@ -41,10 +39,20 @@ impl FromStr for PasswordLength {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
-            "s" | "short" => Ok(Self::Short),
+            "s" | "small" => Ok(Self::Small),
             "m" | "medium" => Ok(Self::Medium),
-            "l" | "long" => Ok(Self::Long),
+            "l" | "large" => Ok(Self::Large),
             _ => anyhow::bail!("Unsupported value '{s}'"),
+        }
+    }
+}
+
+impl From<PasswordLength> for usize {
+    fn from(value: PasswordLength) -> Self {
+        match value {
+            PasswordLength::Small => 10,
+            PasswordLength::Medium => 15,
+            PasswordLength::Large => 20,
         }
     }
 }
@@ -59,21 +67,22 @@ mod tests {
     fn return_default_args() {
         let args = Args::from_iter(&[APP]);
 
-        assert_eq!(args.length, PasswordLength::Long);
+        assert_eq!(args.length, PasswordLength::Small);
         assert_eq!(args.tokens, 3);
-        assert_eq!(args.ignore_clipboard, false);
+        assert_eq!(args.clipboard, false);
     }
 
     #[rstest::rstest]
-    #[case("l", PasswordLength::Long)]
-    #[case("long", PasswordLength::Long)]
-    #[case("m", PasswordLength::Medium)]
-    #[case("medium", PasswordLength::Medium)]
-    #[case("s", PasswordLength::Short)]
-    #[case("short", PasswordLength::Short)]
-    fn parse_length_arg(#[case] length: &str, #[case] expected: PasswordLength) {
-        let args = Args::from_iter(&[APP, "-l", length]);
+    #[case("l", PasswordLength::Large, 20)]
+    #[case("large", PasswordLength::Large, 20)]
+    #[case("m", PasswordLength::Medium, 15)]
+    #[case("medium", PasswordLength::Medium, 15)]
+    #[case("s", PasswordLength::Small, 10)]
+    #[case("small", PasswordLength::Small, 10)]
+    fn parse_length_arg(#[case] param: &str, #[case] expected: PasswordLength, #[case] len: usize) {
+        let args = Args::from_iter(&[APP, "-l", param]);
         assert_eq!(args.length, expected);
+        assert_eq!(usize::from(args.length), len);
     }
 
     #[test]
@@ -98,9 +107,9 @@ mod tests {
     }
 
     #[rstest::rstest]
-    #[case("-i", true)]
-    fn parse_ignore_clipboard_flag(#[case] ignore_clipboard: &str, #[case] expected: bool) {
+    #[case("-c", true)]
+    fn parse_clipboard_flag(#[case] ignore_clipboard: &str, #[case] expected: bool) {
         let args = Args::from_iter(&[APP, ignore_clipboard]);
-        assert_eq!(args.ignore_clipboard, expected);
+        assert_eq!(args.clipboard, expected);
     }
 }
