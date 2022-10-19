@@ -22,9 +22,6 @@ pub struct Args {
         default_value = "3",
     )]
     pub tokens: usize,
-    /// Copy password to clipboard
-    #[structopt(short, long)]
-    pub clipboard: bool,
 }
 
 #[derive(Debug, Eq, PartialEq)]
@@ -69,7 +66,6 @@ mod tests {
 
         assert_eq!(args.length, PasswordLength::Small);
         assert_eq!(args.tokens, 3);
-        assert_eq!(args.clipboard, false);
     }
 
     #[rstest::rstest]
@@ -104,12 +100,5 @@ mod tests {
     fn parse_invalid_tokes_arg() {
         let args = Args::from_iter_safe(&[APP, "-t", "invalid tokens"]);
         assert!(args.is_err());
-    }
-
-    #[rstest::rstest]
-    #[case("-c", true)]
-    fn parse_clipboard_flag(#[case] ignore_clipboard: &str, #[case] expected: bool) {
-        let args = Args::from_iter(&[APP, ignore_clipboard]);
-        assert_eq!(args.clipboard, expected);
     }
 }

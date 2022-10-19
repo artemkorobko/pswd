@@ -11,14 +11,6 @@ fn main() {
     build_generators_chain().generate(&mut buf, &mut rng);
     let password = String::from_utf8(buf).expect("Can't to convert generated password to string");
     println!("{password}");
-    if args.clipboard {
-        use clipboard::{ClipboardContext, ClipboardProvider};
-        ClipboardContext::new()
-            .expect("Can't create clipboard context")
-            .set_contents(password)
-            .expect("Can't copy generated password to clipboard");
-        println!("Copied to clipboard.");
-    }
 }
 
 fn create_password_buffer(len: usize, tokens: usize) -> Vec<u8> {
