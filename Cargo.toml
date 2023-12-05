@@ -4,9 +4,9 @@ version = "1.2.0"
 edition = "2021"
 
 [dependencies]
-anyhow = "1.0"
-rand = "0.8"
-structopt = "0.3"
+anyhow = "1.0.75"
+rand = "0.8.5"
+structopt = "0.3.26"
 
 [dev-dependencies]
-rstest = "0.15"
+rstest = "0.18.2"
