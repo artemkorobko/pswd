@@ -6,13 +6,8 @@ use structopt::StructOpt;
 #[derive(StructOpt, Debug)]
 #[structopt()]
 pub struct Args {
-    /// Password length
-    #[structopt(
-        short,
-        long,
-        possible_values = &["small", "s", "medium", "m", "large", "l"],
-        default_value = "s",
-    )]
+    /// Password length [possible values: small, s, medium, m, large, l, <number>]
+    #[structopt(short, long, default_value = "s")]
     pub length: PasswordLength,
     /// Number of password tokens separated by dash
     #[structopt(
@@ -29,18 +24,31 @@ pub enum PasswordLength {
     Small,
     Medium,
     Large,
+    Custom(usize),
+}
+
+impl PasswordLength {
+    fn try_from_name(s: &str) -> Option<Self> {
+        match s {
+            "s" | "small" => Some(Self::Small),
+            "m" | "medium" => Some(Self::Medium),
+            "l" | "large" => Some(Self::Large),
+            _ => None,
+        }
+    }
+
+    fn try_from_number(s: &str) -> Option<Self> {
+        s.parse::<usize>().map(Self::Custom).ok()
+    }
 }
 
 impl FromStr for PasswordLength {
     type Err = anyhow::Error;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "s" | "small" => Ok(Self::Small),
-            "m" | "medium" => Ok(Self::Medium),
-            "l" | "large" => Ok(Self::Large),
-            _ => anyhow::bail!("Unsupported value '{s}'"),
-        }
+        Self::try_from_name(s)
+            .or_else(|| Self::try_from_number(s))
+            .ok_or(anyhow::anyhow!("Unsupported value '{s}'"))
     }
 }
 
@@ -50,6 +58,7 @@ impl From<PasswordLength> for usize {
             PasswordLength::Small => 10,
             PasswordLength::Medium => 15,
             PasswordLength::Large => 20,
+            PasswordLength::Custom(len) => len,
         }
     }
 }
@@ -69,6 +78,7 @@ mod tests {
     }
 
     #[rstest::rstest]
+    #[case("25", PasswordLength::Custom(25), 25)]
     #[case("l", PasswordLength::Large, 20)]
     #[case("large", PasswordLength::Large, 20)]
     #[case("m", PasswordLength::Medium, 15)]

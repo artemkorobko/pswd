@@ -1,6 +1,6 @@
 pub trait Generator {
     fn generate<R: rand::Rng>(&self, buf: &mut [u8], rng: &mut R);
-    fn and_then<T>(self, gen: T) -> Chained<Self, T>
+    fn chain<T>(self, gen: T) -> Chained<Self, T>
     where
         T: Generator,
         Self: Sized,
@@ -122,8 +122,8 @@ mod tests {
         let digit = Digit::new(0.1);
 
         baseline
-            .and_then(upper_case)
-            .and_then(digit)
+            .chain(upper_case)
+            .chain(digit)
             .generate(&mut buf, &mut rand::thread_rng());
 
         let mut lower_case_letters = 0;
