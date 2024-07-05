@@ -1,25 +1,18 @@
 use std::str::FromStr;
 
-use structopt::StructOpt;
-
 /// Secure password generator
-#[derive(StructOpt, Debug)]
-#[structopt()]
+#[derive(clap::Parser, Debug)]
+#[command(version, about)]
 pub struct Args {
-    /// Password length [possible values: small, s, medium, m, large, l, <number>]
-    #[structopt(short, long, default_value = "s")]
+    /// Password length [possible values: s, small, m, medium, l, large]
+    #[arg(short, long, default_value = "s")]
     pub length: PasswordLength,
     /// Number of password tokens separated by dash
-    #[structopt(
-        short,
-        long,
-        possible_values = &["1", "2", "3"],
-        default_value = "3",
-    )]
+    #[arg(short, long, default_value = "3")]
     pub tokens: usize,
 }
 
-#[derive(Debug, Eq, PartialEq)]
+#[derive(Debug, Clone, Eq, PartialEq)]
 pub enum PasswordLength {
     Small,
     Medium,
@@ -65,13 +58,15 @@ impl From<PasswordLength> for usize {
 
 #[cfg(test)]
 mod tests {
+    use clap::Parser;
+
     use super::*;
 
     const APP: &str = "app";
 
     #[test]
     fn return_default_args() {
-        let args = Args::from_iter(&[APP]);
+        let args = Args::try_parse_from(&[APP]).expect("Should parse empty arguments");
 
         assert_eq!(args.length, PasswordLength::Small);
         assert_eq!(args.tokens, 3);
@@ -86,14 +81,17 @@ mod tests {
     #[case("s", PasswordLength::Small, 10)]
     #[case("small", PasswordLength::Small, 10)]
     fn parse_length_arg(#[case] param: &str, #[case] expected: PasswordLength, #[case] len: usize) {
-        let args = Args::from_iter(&[APP, "-l", param]);
+        let args = Args::try_parse_from(&[APP, "-l", param])
+            .expect("Should parse password length argument");
+
         assert_eq!(args.length, expected);
         assert_eq!(usize::from(args.length), len);
     }
 
     #[test]
     fn parse_invalid_length_arg() {
-        let args = Args::from_iter_safe(&[APP, "-l", "invalid length"]);
+        let args = Args::try_parse_from(&[APP, "-l", "invalid length"]);
+
         assert!(args.is_err());
     }
 
@@ -102,13 +100,16 @@ mod tests {
     #[case("2", 2)]
     #[case("3", 3)]
     fn parse_tokens_arg(#[case] tokens: &str, #[case] expected: usize) {
-        let args = Args::from_iter(&[APP, "-t", tokens]);
+        let args = Args::try_parse_from(&[APP, "-t", tokens])
+            .expect("Should parse password length argument as tokens count");
+
         assert_eq!(args.tokens, expected);
     }
 
     #[test]
     fn parse_invalid_tokes_arg() {
-        let args = Args::from_iter_safe(&[APP, "-t", "invalid tokens"]);
+        let args = Args::try_parse_from(&[APP, "-t", "invalid tokens count"]);
+
         assert!(args.is_err());
     }
 }
