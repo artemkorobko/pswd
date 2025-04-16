@@ -4,7 +4,7 @@ use std::collections::HashSet;
 pub struct Pattern<'a>(&'a str);
 
 impl<'a> Pattern<'a> {
-    const fn from_str(s: &'a str) -> Self {
+    pub const fn from_str(s: &'a str) -> Self {
         Self(s)
     }
 
