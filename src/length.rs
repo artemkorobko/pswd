@@ -1,12 +1,38 @@
-use anyhow::Context;
 use std::str::FromStr;
 
 #[derive(Debug, Copy, Clone)]
 pub struct SecretLength(usize);
 
+const MINIMUM_LENGTH: usize = 10;
+const MEDIUM_LENGTH: usize = 20;
+const MAXIMUM_LENGTH: usize = 30;
+
 impl SecretLength {
     pub fn as_usize(self) -> usize {
         self.0
+    }
+
+    fn try_from_name(s: &str) -> Option<Self> {
+        match s {
+            "s" | "small" => Some(Self(MINIMUM_LENGTH)),
+            "m" | "medium" => Some(Self(MEDIUM_LENGTH)),
+            "l" | "large" => Some(Self(MAXIMUM_LENGTH)),
+            _ => None,
+        }
+    }
+
+    fn try_from_number(s: &str) -> Option<Self> {
+        let len = s.parse::<usize>().ok()?;
+
+        if len < MINIMUM_LENGTH {
+            return None;
+        }
+
+        if len > MAXIMUM_LENGTH {
+            return None;
+        }
+
+        Some(Self(len))
     }
 }
 
@@ -14,32 +40,9 @@ impl FromStr for SecretLength {
     type Err = anyhow::Error;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let len = s
-            .parse::<usize>()
-            .with_context(|| anyhow::anyhow!("Invalid secret length"))?;
-        SecretLength::try_from(len)
-    }
-}
-
-impl TryFrom<usize> for SecretLength {
-    type Error = anyhow::Error;
-
-    fn try_from(value: usize) -> Result<Self, Self::Error> {
-        let minimum_length = 10;
-        if value < minimum_length {
-            return Err(anyhow::anyhow!(
-                "Secret length is too small. The minimal length is {minimum_length}."
-            ));
-        }
-
-        let maximum_length = 30;
-        if value > maximum_length {
-            return Err(anyhow::anyhow!(
-                "Secret length is too large. The maximal length is {maximum_length}."
-            ));
-        }
-
-        Ok(Self(value))
+        Self::try_from_name(s)
+            .or_else(|| Self::try_from_number(s))
+            .ok_or(anyhow::anyhow!("Unsupported secret length '{s}'"))
     }
 }
 
@@ -52,6 +55,19 @@ impl From<SecretLength> for usize {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use rstest::rstest;
+
+    #[rstest]
+    #[case("s", 10)]
+    #[case("small", 10)]
+    #[case("m", 20)]
+    #[case("medium", 20)]
+    #[case("l", 30)]
+    #[case("large", 30)]
+    fn build_secret_length_from_name(#[case] name: &str, #[case] expected: usize) {
+        let len = SecretLength::from_str(name).unwrap();
+        assert_eq!(len.as_usize(), expected);
+    }
 
     #[test]
     fn build_secret_length_from_str() {
@@ -60,24 +76,15 @@ mod tests {
     }
 
     #[test]
-    fn build_secret_length_from_usize() {
-        let len = SecretLength::try_from(15).unwrap();
-        assert_eq!(len.as_usize(), 15);
-    }
-
-    #[test]
     fn do_not_build_secret_length_from_invalid_str() {
         let err = SecretLength::from_str("invalid-str").unwrap_err();
-        assert_eq!(err.to_string(), "Invalid secret length");
+        assert_eq!(err.to_string(), "Unsupported secret length 'invalid-str'");
     }
 
     #[test]
     fn validate_secret_length_minimal_value() {
         let err = SecretLength::from_str("9").unwrap_err();
-        assert_eq!(
-            err.to_string(),
-            "Secret length is too small. The minimal length is 10."
-        );
+        assert_eq!(err.to_string(), "Unsupported secret length '9'");
 
         let len = SecretLength::from_str("10").unwrap();
         assert_eq!(len.as_usize(), 10);
@@ -89,9 +96,6 @@ mod tests {
         assert_eq!(len.as_usize(), 30);
 
         let err = SecretLength::from_str("31").unwrap_err();
-        assert_eq!(
-            err.to_string(),
-            "Secret length is too large. The maximal length is 30."
-        );
+        assert_eq!(err.to_string(), "Unsupported secret length '31'");
     }
 }
