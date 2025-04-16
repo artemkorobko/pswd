@@ -8,11 +8,11 @@ pub use crate::options::segments::Segments;
 #[derive(clap::Parser, Debug)]
 #[command(version, about)]
 pub struct Args {
-    /// Secret length [10..30]
+    /// Secret length [10..30] or [s, small, m, medium, l, large]
     #[arg(short, long, default_value = "20")]
     pub length: SecretLength,
-    /// The segments count [0..3]
-    #[arg(short, long, default_value = "2")]
+    /// The segments count [1..3]
+    #[arg(short, long, default_value = "1")]
     pub segments: Segments,
 }
 
@@ -29,7 +29,7 @@ mod tests {
         let args = Args::try_parse_from(&[APP]).unwrap();
 
         assert_eq!(args.length.as_usize(), 20);
-        assert_eq!(args.segments.as_usize(), 2);
+        assert_eq!(args.segments.as_usize(), 1);
     }
 
     #[rstest::rstest]
