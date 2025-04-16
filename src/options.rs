@@ -1,59 +1,17 @@
-use std::str::FromStr;
+use crate::SecretLength;
 
-/// Secure password generator
+pub mod length;
+
+/// Secret generator
 #[derive(clap::Parser, Debug)]
 #[command(version, about)]
 pub struct Args {
-    /// Password length [possible values: s, small, m, medium, l, large]
-    #[arg(short, long, default_value = "s")]
-    pub length: PasswordLength,
-    /// Number of password tokens separated by dash
-    #[arg(short, long, default_value = "3")]
-    pub tokens: usize,
-}
-
-#[derive(Debug, Clone, Eq, PartialEq)]
-pub enum PasswordLength {
-    Small,
-    Medium,
-    Large,
-    Custom(usize),
-}
-
-impl PasswordLength {
-    fn try_from_name(s: &str) -> Option<Self> {
-        match s {
-            "s" | "small" => Some(Self::Small),
-            "m" | "medium" => Some(Self::Medium),
-            "l" | "large" => Some(Self::Large),
-            _ => None,
-        }
-    }
-
-    fn try_from_number(s: &str) -> Option<Self> {
-        s.parse::<usize>().map(Self::Custom).ok()
-    }
-}
-
-impl FromStr for PasswordLength {
-    type Err = anyhow::Error;
-
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        Self::try_from_name(s)
-            .or_else(|| Self::try_from_number(s))
-            .ok_or(anyhow::anyhow!("Unsupported value '{s}'"))
-    }
-}
-
-impl From<PasswordLength> for usize {
-    fn from(value: PasswordLength) -> Self {
-        match value {
-            PasswordLength::Small => 10,
-            PasswordLength::Medium => 15,
-            PasswordLength::Large => 20,
-            PasswordLength::Custom(len) => len,
-        }
-    }
+    /// Secret length [10..30]
+    #[arg(short, long, default_value = "20")]
+    pub length: SecretLength,
+    /// The segments count
+    #[arg(short, long, default_value = "2")]
+    pub segments: usize,
 }
 
 #[cfg(test)]
@@ -65,51 +23,35 @@ mod tests {
     const APP: &str = "app";
 
     #[test]
-    fn return_default_args() {
-        let args = Args::try_parse_from(&[APP]).expect("Should parse empty arguments");
+    fn parse_default_args() {
+        let args = Args::try_parse_from(&[APP]).unwrap();
 
-        assert_eq!(args.length, PasswordLength::Small);
-        assert_eq!(args.tokens, 3);
+        assert_eq!(args.length.as_usize(), 20);
+        assert_eq!(args.segments, 2);
     }
 
     #[rstest::rstest]
-    #[case("25", PasswordLength::Custom(25), 25)]
-    #[case("l", PasswordLength::Large, 20)]
-    #[case("large", PasswordLength::Large, 20)]
-    #[case("m", PasswordLength::Medium, 15)]
-    #[case("medium", PasswordLength::Medium, 15)]
-    #[case("s", PasswordLength::Small, 10)]
-    #[case("small", PasswordLength::Small, 10)]
-    fn parse_length_arg(#[case] param: &str, #[case] expected: PasswordLength, #[case] len: usize) {
-        let args = Args::try_parse_from(&[APP, "-l", param])
-            .expect("Should parse password length argument");
+    #[case(& [APP, "-l", "20"], 20)]
+    #[case(& [APP, "--length", "30"], 30)]
+    fn parse_length_arg(#[case] args: &[&str], #[case] expected: usize) {
+        let args = Args::try_parse_from(args).unwrap();
 
-        assert_eq!(args.length, expected);
-        assert_eq!(usize::from(args.length), len);
-    }
-
-    #[test]
-    fn parse_invalid_length_arg() {
-        let args = Args::try_parse_from(&[APP, "-l", "invalid length"]);
-
-        assert!(args.is_err());
+        assert_eq!(args.length.as_usize(), expected);
     }
 
     #[rstest::rstest]
-    #[case("1", 1)]
-    #[case("2", 2)]
-    #[case("3", 3)]
-    fn parse_tokens_arg(#[case] tokens: &str, #[case] expected: usize) {
-        let args = Args::try_parse_from(&[APP, "-t", tokens])
-            .expect("Should parse password length argument as tokens count");
+    #[case(& [APP, "-s", "2"], 2)]
+    #[case(& [APP, "--segments", "4"], 4)]
+    fn parse_segments_arg(#[case] args: &[&str], #[case] expected: usize) {
+        let args = Args::try_parse_from(args).unwrap();
 
-        assert_eq!(args.tokens, expected);
+        assert_eq!(args.segments, expected);
     }
 
     #[test]
-    fn parse_invalid_tokes_arg() {
-        let args = Args::try_parse_from(&[APP, "-t", "invalid tokens count"]);
+    fn return_error_on_invalid_length() {
+        let result = Args::try_parse_from(&[APP, "-l", "5"]);
 
-        assert!(args.is_err());
+        assert!(result.is_err());
     }
 }
