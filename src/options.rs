@@ -1,6 +1,8 @@
-use crate::SecretLength;
-
 pub mod length;
+pub mod segments;
+
+pub use crate::options::length::SecretLength;
+pub use crate::options::segments::Segments;
 
 /// Secret generator
 #[derive(clap::Parser, Debug)]
@@ -9,9 +11,9 @@ pub struct Args {
     /// Secret length [10..30]
     #[arg(short, long, default_value = "20")]
     pub length: SecretLength,
-    /// The segments count
+    /// The segments count [0..3]
     #[arg(short, long, default_value = "2")]
-    pub segments: usize,
+    pub segments: Segments,
 }
 
 #[cfg(test)]
@@ -27,7 +29,7 @@ mod tests {
         let args = Args::try_parse_from(&[APP]).unwrap();
 
         assert_eq!(args.length.as_usize(), 20);
-        assert_eq!(args.segments, 2);
+        assert_eq!(args.segments.as_usize(), 2);
     }
 
     #[rstest::rstest]
@@ -41,17 +43,15 @@ mod tests {
 
     #[rstest::rstest]
     #[case(& [APP, "-s", "2"], 2)]
-    #[case(& [APP, "--segments", "4"], 4)]
+    #[case(& [APP, "--segments", "3"], 3)]
     fn parse_segments_arg(#[case] args: &[&str], #[case] expected: usize) {
         let args = Args::try_parse_from(args).unwrap();
-
-        assert_eq!(args.segments, expected);
+        assert_eq!(args.segments.as_usize(), expected);
     }
 
     #[test]
     fn return_error_on_invalid_length() {
         let result = Args::try_parse_from(&[APP, "-l", "5"]);
-
         assert!(result.is_err());
     }
 }

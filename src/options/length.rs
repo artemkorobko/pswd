@@ -42,7 +42,7 @@ impl FromStr for SecretLength {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         Self::try_from_name(s)
             .or_else(|| Self::try_from_number(s))
-            .ok_or(anyhow::anyhow!("Unsupported secret length '{s}'"))
+            .ok_or(anyhow::anyhow!("Invalid secret length: {s}"))
     }
 }
 
@@ -78,13 +78,13 @@ mod tests {
     #[test]
     fn do_not_build_secret_length_from_invalid_str() {
         let err = SecretLength::from_str("invalid-str").unwrap_err();
-        assert_eq!(err.to_string(), "Unsupported secret length 'invalid-str'");
+        assert_eq!(err.to_string(), "Invalid secret length: invalid-str");
     }
 
     #[test]
     fn validate_secret_length_minimal_value() {
         let err = SecretLength::from_str("9").unwrap_err();
-        assert_eq!(err.to_string(), "Unsupported secret length '9'");
+        assert_eq!(err.to_string(), "Invalid secret length: 9");
 
         let len = SecretLength::from_str("10").unwrap();
         assert_eq!(len.as_usize(), 10);
@@ -96,6 +96,6 @@ mod tests {
         assert_eq!(len.as_usize(), 30);
 
         let err = SecretLength::from_str("31").unwrap_err();
-        assert_eq!(err.to_string(), "Unsupported secret length '31'");
+        assert_eq!(err.to_string(), "Invalid secret length: 31");
     }
 }
