@@ -11,9 +11,12 @@ pub struct Args {
     /// Secret length [10..30] or [s, small, m, medium, l, large]
     #[arg(short, long, default_value = "20")]
     pub length: SecretLength,
-    /// The segments count [1..3]
-    #[arg(short, long, default_value = "1")]
+    /// Segments count [1..3]
+    #[arg(short, long, default_value = "2")]
     pub segments: Segments,
+    /// Generate human-readable secret
+    #[arg(short, long)]
+    pub readable: bool,
 }
 
 #[cfg(test)]

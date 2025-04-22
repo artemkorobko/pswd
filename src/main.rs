@@ -1,31 +1,82 @@
 use clap::Parser;
-use generator::Generator;
+
+use crate::generator::{CaseModifier, Generator, GeneratorChain, PatternGenerator};
 
 mod generator;
 mod options;
 
-fn main() {
+const NUMBERS_PATTERN: &str = "1234567890";
+const VOWELS_PATTERN: &str = "aeiou";
+const CONSONANTS_PATTERN: &str = "bcdfghjklmnpqrstvwxyz";
+const SPECIALS_PATTERN: &str = "`!@#$%^&*()_-+={[}]|\\:;\"'<,>.?/";
+const SPECIALS_REDUCED_PATTERN: &str = "`!@#$%&_=";
+
+fn main() -> anyhow::Result<()> {
     let args = options::Args::parse();
-    let mut rng = rand::thread_rng();
-    let mut buf = create_password_buffer(args.length.into(), args.tokens);
-    build_generators_chain().generate(&mut buf, &mut rng);
-    let password = String::from_utf8(buf).expect("Can't to convert generated password to string");
-    println!("{password}");
+    let length = args.length.as_usize();
+    let segments = args.segments.as_usize();
+    let vowels = PatternGenerator::new(VOWELS_PATTERN, 1.0);
+    let vowels = CaseModifier::new(Box::new(vowels), 0.1);
+    let mut generators = GeneratorChain::new(Box::new(vowels));
+    let numbers = PatternGenerator::new(NUMBERS_PATTERN, 0.1);
+    generators.and_then(Box::new(numbers));
+    let consonants = PatternGenerator::new(CONSONANTS_PATTERN, 0.5);
+    let consonants = CaseModifier::new(Box::new(consonants), 0.1);
+    generators.and_then(Box::new(consonants));
+
+    let secret = if segments == 1 {
+        if !args.readable {
+            let specials = PatternGenerator::new(SPECIALS_PATTERN, 0.05);
+            generators.start_from(Box::new(specials));
+        } else {
+            let specials = PatternGenerator::new(SPECIALS_REDUCED_PATTERN, 0.05);
+            generators.start_from(Box::new(specials));
+        }
+
+        generate_single_segment(length, &mut generators)?
+    } else {
+        generate_multi_segment(length, segments, &mut generators)?.join("-")
+    };
+
+    println!("{secret}");
+    Ok(())
 }
 
-fn create_password_buffer(len: usize, tokens: usize) -> Vec<u8> {
-    let max_len = (len * tokens) + 2;
-    let mut password = vec![0u8; max_len];
-    for pos in 1..tokens {
-        password[(pos * (len + 1)) - 1] = b'-';
+fn generate_single_segment(mut len: usize, chain: &mut GeneratorChain) -> anyhow::Result<String> {
+    let mut secret = String::with_capacity(len);
+
+    while len > 0 {
+        let symbol = chain
+            .generate()
+            .ok_or(anyhow::anyhow!("Failed to generate symbol"))?;
+        secret.push(symbol);
+        len -= 1;
     }
-    password
+
+    Ok(secret)
 }
 
-fn build_generators_chain() -> impl Generator {
-    let upper_case_generator = generator::UpperCaseLetter::new(0.1);
-    let digit_generator = generator::Digit::new(0.05);
-    generator::Baseline
-        .chain(upper_case_generator)
-        .chain(digit_generator)
+fn generate_multi_segment(
+    len: usize,
+    count: usize,
+    chain: &mut GeneratorChain,
+) -> anyhow::Result<Vec<String>> {
+    let max_segment_len = len / count;
+    let mut total_len = 0;
+    let mut segments = Vec::with_capacity(count);
+
+    for _ in 0..count {
+        total_len += max_segment_len;
+
+        let segment = if total_len > len {
+            let len = core::cmp::min(max_segment_len, len - total_len);
+            generate_single_segment(len, chain)
+        } else {
+            generate_single_segment(max_segment_len, chain)
+        }?;
+
+        segments.push(segment);
+    }
+
+    Ok(segments)
 }
